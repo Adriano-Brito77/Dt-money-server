@@ -1,7 +1,15 @@
-import { Controller, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -11,14 +19,9 @@ export class UserController {
   create(@Body() data: CreateUserDto) {
     return this.userService.create(data);
   }
-
-  @Post('login')
-  login(@Body() { email, password }: CreateUserDto) {
-    return this.userService.login({ email, password });
-  }
-
+  @UseGuards(AuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 }

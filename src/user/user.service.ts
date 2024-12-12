@@ -2,7 +2,6 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -35,22 +34,37 @@ export class UserService {
     return user;
   }
 
-  async login({ email, password }: CreateUserDto) {
-    const userExistcs = await this.prisma.user.findFirst({
+  async update(id: string, { name, email, password }: UpdateUserDto) {
+    const userExists = await this.prisma.user.findUnique({
       where: {
+        id,
+      },
+    });
+    console.log(userExists);
+    if (!userExists) throw new NotFoundException('Usuario invalido');
+
+    if (!name) name = userExists.name;
+
+    if (!email) email = userExists.email;
+
+    if (!password) {
+      password = userExists.password;
+    } else {
+      const passwordHash = await bcrypt.hash(password, 10);
+      password = passwordHash;
+    }
+
+    const editUser = await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        name,
         email,
+        password,
       },
     });
 
-    if (!userExistcs) throw new NotFoundException('Usuario não existe');
-
-    if (userExistcs.password != password)
-      throw new UnauthorizedException('Credenciais inválidas');
-
-    return 'Login relizado com sucesso';
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return editUser;
   }
 }
