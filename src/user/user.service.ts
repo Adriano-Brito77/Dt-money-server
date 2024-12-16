@@ -18,7 +18,6 @@ export class UserService {
         email,
       },
     });
-    console.log(emailAlreadyExists);
 
     if (emailAlreadyExists) throw new ConflictException('Email ja cadastrado');
 
@@ -40,7 +39,7 @@ export class UserService {
         id,
       },
     });
-    console.log(userExists);
+
     if (!userExists) throw new NotFoundException('Usuario invalido');
 
     if (!name) name = userExists.name;
