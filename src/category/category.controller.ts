@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  ExecutionContext,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -38,12 +37,13 @@ export class CategoryController {
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.categoryService.update(+id, updateCategoryDto);
+    return this.categoryService.update(id, user.id, updateCategoryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  remove(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+    return this.categoryService.remove(id, user.id);
   }
 }

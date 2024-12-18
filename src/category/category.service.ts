@@ -1,8 +1,11 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PrismaService } from 'src/prisma.service';
-import { retry } from 'rxjs';
 
 @Injectable()
 export class CategoryService {
@@ -36,15 +39,47 @@ export class CategoryService {
     return categoryExist;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async update(id: string, user: string, { name }: UpdateCategoryDto) {
+    const categorAlreadyExists = await this.prisma.category.findUnique({
+      where: {
+        id,
+        user,
+      },
+    });
+
+    if (!categorAlreadyExists)
+      throw new NotFoundException('Categoria não encontrada!');
+
+    const editcategory = await this.prisma.category.update({
+      where: {
+        id,
+        user,
+      },
+      data: {
+        name,
+      },
+    });
+    return 'Categoria atualizada com sucesso!';
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
+  async remove(id: string, user: string) {
+    const categoryexists = await this.prisma.category.findUnique({
+      where: {
+        id,
+        user,
+      },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+    if (!categoryexists)
+      throw new NotFoundException('Categoria não encontrada!');
+
+    const deleteCategory = await this.prisma.category.delete({
+      where: {
+        id,
+        user,
+      },
+    });
+
+    return 'Categoria deletada com sucesso!';
   }
 }

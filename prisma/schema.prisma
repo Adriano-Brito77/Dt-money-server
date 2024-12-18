@@ -35,3 +35,14 @@ model Category{
 
 }
 
+model Transaction{
+  id              String @id @default(uuid())
+  description     String 
+  user            String
+  price           Float
+  category        String
+  type            String
+
+  @@map("transaction")
+}
+
