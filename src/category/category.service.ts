@@ -1,4 +1,5 @@
 import {
+  // eslint-disable-next-line prettier/prettier
   ConflictException,
   Injectable,
   NotFoundException,
@@ -31,12 +32,15 @@ export class CategoryService {
   }
 
   async findAll(user: string) {
-    const categoryExist = await this.prisma.category.findMany({
+    const categories = await this.prisma.category.findMany({
       where: {
         user,
       },
+      select: {
+        name: true,
+      },
     });
-    return categoryExist;
+    return categories;
   }
 
   async update(id: string, user: string, { name }: UpdateCategoryDto) {
@@ -50,13 +54,14 @@ export class CategoryService {
     if (!categorAlreadyExists)
       throw new NotFoundException('Categoria não encontrada!');
 
-    const editcategory = await this.prisma.category.update({
+    await this.prisma.category.update({
       where: {
         id,
         user,
       },
       data: {
         name,
+        id,
       },
     });
     return 'Categoria atualizada com sucesso!';
@@ -73,7 +78,7 @@ export class CategoryService {
     if (!categoryexists)
       throw new NotFoundException('Categoria não encontrada!');
 
-    const deleteCategory = await this.prisma.category.delete({
+    await this.prisma.category.delete({
       where: {
         id,
         user,
