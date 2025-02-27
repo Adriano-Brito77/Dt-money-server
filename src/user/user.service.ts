@@ -12,7 +12,11 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async create({ name, email, password }: CreateUserDto) {
+  async create({ name, email, password, confirmPassword }: CreateUserDto) {
+    if (password !== confirmPassword) {
+      throw new ConflictException('As senhas não coincidem');
+    }
+
     const emailAlreadyExists = await this.prisma.user.findFirst({
       where: {
         email,
