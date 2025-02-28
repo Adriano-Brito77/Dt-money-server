@@ -13,9 +13,9 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create({ name, email, password, confirmPassword }: CreateUserDto) {
-    if (password !== confirmPassword) {
-      throw new ConflictException('As senhas não coincidem');
-    }
+
+    if(!name) throw new ConflictException('Preencha o campo nome');
+      
 
     const emailAlreadyExists = await this.prisma.user.findFirst({
       where: {
@@ -24,6 +24,10 @@ export class UserService {
     });
 
     if (emailAlreadyExists) throw new ConflictException('Email ja cadastrado');
+    if (password !== confirmPassword) {
+      console.log(password, confirmPassword);
+      throw new ConflictException('As senhas não coincidem');
+    }
 
     const passwordHash = await bcrypt.hash(password, 10);
 
