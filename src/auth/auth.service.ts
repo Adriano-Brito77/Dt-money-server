@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -18,6 +19,8 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<{ user: { name: string }; access_token: string }> {
+    if (!email) throw new ConflictException('Digite seu e-mail');
+    if (!password) throw new ConflictException('Digite sua senha');
     const user = await this.prisma.user.findFirst({
       where: {
         email,
@@ -28,7 +31,7 @@ export class AuthService {
     const checkpass = await bcrypt.compare(password, user.password);
 
     if (!checkpass) {
-      throw new UnauthorizedException('Credenciais invalidas');
+      throw new UnauthorizedException('Senha invalida');
     }
     const payload = { sub: user.id, userpass: user.email };
     return {

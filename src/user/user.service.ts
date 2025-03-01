@@ -14,7 +14,10 @@ export class UserService {
 
   async create({ name, email, password, confirmPassword }: CreateUserDto) {
 
-    if(!name) throw new ConflictException('Preencha o campo nome');
+    if(!name) throw new ConflictException('Digite seu nome !');
+    if(!email) throw new ConflictException('Digite seu e-mail !');
+    if(!password) throw new ConflictException('Digite sua senha !');
+    if(!confirmPassword) throw new ConflictException('Digite a confirmação de senha !');
       
 
     const emailAlreadyExists = await this.prisma.user.findFirst({
