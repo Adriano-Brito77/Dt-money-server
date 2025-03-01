@@ -1,14 +1,13 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   Post,
-  Request,
-  UseGuards,
+  Res,
 } from '@nestjs/common';
-import { AuthGuard } from './auth.guard';
+import { Response } from 'express';
+
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -17,7 +16,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+  signIn(@Body() signInDto: Record<string, any>, @Res() res: Response) {
+    return this.authService.signIn(signInDto.email, signInDto.password, res);
   }
 }

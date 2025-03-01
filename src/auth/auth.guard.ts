@@ -15,25 +15,29 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    const token = this.extractTokenFromHeader(request);
+    // Tentando extrair o token apenas dos cookies
+    const token = this.extractTokenFromCookies(request);
     if (!token) {
-      throw new UnauthorizedException('Usuario não autenticado');
+      throw new UnauthorizedException('Usuário não autenticado');
     }
 
     try {
+      // Verificando o token usando o segredo
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
 
+      // Adicionando o payload no request para que as rotas protegidas possam acessar
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException('Usuario não autenticado!');
+      throw new UnauthorizedException('Usuário não autenticado!');
     }
+
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+  private extractTokenFromCookies(request: Request): string | undefined {
+    // Extraindo o token diretamente dos cookies
+    return request.cookies['access_token'];
   }
 }
