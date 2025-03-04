@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { format } from 'date-fns';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -32,7 +33,7 @@ export class TransactionService {
     return 'Transação incluida com sucesso!';
   }
 
-  async findAll(user: string, createdAt: Date) {
+  async findAll(user: string) {
     const transaction = await this.prisma.transaction.findMany({
       where: {
         user,
@@ -46,6 +47,16 @@ export class TransactionService {
         createdAt: true, // Garante que o timestamp seja retornado
       },
     });
+
+    return transaction
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      ) // Ordena do mais novo para o mais antigo
+      .map((transaction) => ({
+        ...transaction,
+        createdAt: format(new Date(transaction.createdAt), 'dd-MM-yyyy'),
+      }));
   }
 
   async update(
