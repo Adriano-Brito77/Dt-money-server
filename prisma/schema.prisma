@@ -42,7 +42,8 @@ model Transaction{
   price           Float
   category        String
   type            String
-
+  createdAt     DateTime  @default(now())
+    
   @@map("transaction")
 }
 

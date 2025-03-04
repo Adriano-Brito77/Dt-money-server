@@ -32,13 +32,20 @@ export class TransactionService {
     return 'Transação incluida com sucesso!';
   }
 
-  async findAll(user: string) {
+  async findAll(user: string, createdAt: Date) {
     const transaction = await this.prisma.transaction.findMany({
       where: {
         user,
       },
+      select: {
+        id: true,
+        description: true,
+        price: true,
+        category: true,
+        type: true,
+        createdAt: true, // Garante que o timestamp seja retornado
+      },
     });
-    return transaction;
   }
 
   async update(

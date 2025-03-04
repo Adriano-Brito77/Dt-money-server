@@ -3,4 +3,5 @@ export class CreateTransactionDto {
   price: number;
   category: string;
   type: string;
+  createdAt: Date;
 }

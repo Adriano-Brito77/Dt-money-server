@@ -37,6 +37,7 @@ export class CategoryService {
         user,
       },
       select: {
+        id: true,
         name: true,
       },
     });
