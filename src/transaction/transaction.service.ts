@@ -44,19 +44,34 @@ export class TransactionService {
         price: true,
         category: true,
         type: true,
-        createdAt: true, // Garante que o timestamp seja retornado
+        createdAt: true,
       },
     });
 
-    return transaction
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      ) // Ordena do mais novo para o mais antigo
-      .map((transaction) => ({
-        ...transaction,
-        createdAt: format(new Date(transaction.createdAt), 'dd-MM-yyyy'),
-      }));
+    // Filtra transações por tipo
+    const income = transaction.filter((t) => t.type === 'income');
+    const outcome = transaction.filter((t) => t.type === 'outcome');
+
+    // Calcula os totais
+    const totalIncome = income.reduce((sum, t) => sum + t.price, 0);
+    const totalOutcome = outcome.reduce((sum, t) => sum + t.price, 0);
+    const result = totalIncome - totalOutcome;
+
+    console.log(totalIncome);
+    return {
+      totalIncome,
+      totalOutcome,
+      result,
+      transaction: transaction
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+        .map((t) => ({
+          ...t,
+          createdAt: format(new Date(t.createdAt), 'dd-MM-yyyy'),
+        })),
+    };
   }
 
   async update(
