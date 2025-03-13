@@ -6,16 +6,16 @@ import {
   Patch,
   Param,
   Delete,
-} from '@nestjs/common';
-import { TransactionService } from './transaction.service';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { UseGuards } from '@nestjs/common';
-import { CurrentUser } from 'src/auth/jwt/current_user';
-import { AuthUser } from 'src/auth/jwt/current_user';
+} from "@nestjs/common";
+import { TransactionService } from "./transaction.service";
+import { CreateTransactionDto } from "./dto/create-transaction.dto";
+import { UpdateTransactionDto } from "./dto/update-transaction.dto";
+import { AuthGuard } from "src/auth/auth.guard";
+import { UseGuards } from "@nestjs/common";
+import { CurrentUser } from "src/auth/jwt/current_user";
+import { AuthUser } from "src/auth/jwt/current_user";
 
-@Controller('transaction')
+@Controller("transaction")
 @UseGuards(AuthGuard)
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
@@ -33,17 +33,17 @@ export class TransactionController {
     return this.transactionService.findAll(user.id);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   update(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
     @CurrentUser() user: AuthUser,
   ) {
     return this.transactionService.update(id, updateTransactionDto, user.id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+  @Delete(":id")
+  remove(@Param("id") id: string, @CurrentUser() user: AuthUser) {
     return this.transactionService.remove(id, user.id);
   }
 }

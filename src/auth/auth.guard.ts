@@ -3,10 +3,10 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
-import { Request } from 'express';
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { jwtConstants } from "./constants";
+import { Request } from "express";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
     // Tentando extrair o token apenas dos cookies
     const token = this.extractTokenFromCookies(request);
     if (!token) {
-      throw new UnauthorizedException('Usuário não autenticado');
+      throw new UnauthorizedException("Usuário não autenticado");
     }
 
     try {
@@ -28,9 +28,9 @@ export class AuthGuard implements CanActivate {
       });
 
       // Adicionando o payload no request para que as rotas protegidas possam acessar
-      request['user'] = payload;
+      request["user"] = payload;
     } catch {
-      throw new UnauthorizedException('Usuário não autenticado!');
+      throw new UnauthorizedException("Usuário não autenticado!");
     }
 
     return true;
@@ -38,6 +38,6 @@ export class AuthGuard implements CanActivate {
 
   private extractTokenFromCookies(request: Request): string | undefined {
     // Extraindo o token diretamente dos cookies
-    return request.cookies['access_token'];
+    return request.cookies["access_token"];
   }
 }

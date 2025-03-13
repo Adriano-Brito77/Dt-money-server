@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { format } from 'date-fns';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { PrismaService } from 'src/prisma.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { format } from "date-fns";
+import { CreateTransactionDto } from "./dto/create-transaction.dto";
+import { UpdateTransactionDto } from "./dto/update-transaction.dto";
+import { PrismaService } from "src/prisma.service";
 
 @Injectable()
 export class TransactionService {
@@ -18,9 +18,9 @@ export class TransactionService {
       },
     });
 
-    if (!categorExists) throw new NotFoundException('Categoria não existe!');
+    if (!categorExists) throw new NotFoundException("Categoria não existe!");
 
-    const transaction = await this.prisma.transaction.create({
+    await this.prisma.transaction.create({
       data: {
         description,
         price,
@@ -30,7 +30,7 @@ export class TransactionService {
       },
     });
 
-    return 'Transação incluida com sucesso!';
+    return "Transação incluida com sucesso!";
   }
 
   async findAll(user: string) {
@@ -49,15 +49,14 @@ export class TransactionService {
     });
 
     // Filtra transações por tipo
-    const income = transaction.filter((t) => t.type === 'income');
-    const outcome = transaction.filter((t) => t.type === 'outcome');
+    const income = transaction.filter((t) => t.type === "income");
+    const outcome = transaction.filter((t) => t.type === "outcome");
 
     // Calcula os totais
     const totalIncome = income.reduce((sum, t) => sum + t.price, 0);
     const totalOutcome = outcome.reduce((sum, t) => sum + t.price, 0);
     const result = totalIncome - totalOutcome;
 
-    console.log(totalIncome);
     return {
       totalIncome,
       totalOutcome,
@@ -69,7 +68,7 @@ export class TransactionService {
         )
         .map((t) => ({
           ...t,
-          createdAt: format(new Date(t.createdAt), 'dd-MM-yyyy'),
+          createdAt: format(new Date(t.createdAt), "dd-MM-yyyy"),
         })),
     };
   }
@@ -87,16 +86,16 @@ export class TransactionService {
     });
 
     if (!transactionExists)
-      throw new NotFoundException('Transação não encontrada');
+      throw new NotFoundException("Transação não encontrada");
 
-    const editTransaction = await this.prisma.transaction.update({
+    await this.prisma.transaction.update({
       where: {
         id,
         user,
       },
       data: { description, price, category, type },
     });
-    return 'Transação alterada com sucesso!';
+    return "Transação alterada com sucesso!";
   }
 
   async remove(id: string, user: string) {
@@ -108,15 +107,15 @@ export class TransactionService {
     });
 
     if (!transactionExist)
-      throw new NotFoundException('Esta transação não existe!');
+      throw new NotFoundException("Esta transação não existe!");
 
-    const deleteTransaction = await this.prisma.transaction.delete({
+    await this.prisma.transaction.delete({
       where: {
         id,
         user,
       },
     });
 
-    return 'Transação deletada com sucesso !';
+    return "Transação deletada com sucesso !";
   }
 }

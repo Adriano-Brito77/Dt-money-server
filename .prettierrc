@@ -1,5 +1,10 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all",
-  "endOfLine": "lf"
+  "prettier/prettier": [
+    "error",
+    {
+      "singleQuote": true,
+      "trailingComma": "all",
+      "endOfLine": "lf"
+    }
+  ]
 }

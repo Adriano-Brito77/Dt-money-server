@@ -17,5 +17,9 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": [
+    "src/**/*.ts", // Inclui todos os arquivos .ts da pasta src
+    "src/templates/**/*" // Inclui todos os arquivos dentro da pasta templates
+  ]
 }
