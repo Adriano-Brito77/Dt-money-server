@@ -3,10 +3,10 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-} from "@nestjs/common";
-import { CreateCategoryDto } from "./dto/create-category.dto";
-import { UpdateCategoryDto } from "./dto/update-category.dto";
-import { PrismaService } from "src/prisma.service";
+} from '@nestjs/common';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class CategoryService {
@@ -20,7 +20,7 @@ export class CategoryService {
       },
     });
     if (categoryAlreadyExist)
-      throw new ConflictException("Categoria ja cadastrada!");
+      throw new ConflictException('Categoria ja cadastrada!');
 
     const category = await this.prisma.category.create({
       data: {
@@ -53,7 +53,7 @@ export class CategoryService {
     });
 
     if (!categorAlreadyExists)
-      throw new NotFoundException("Categoria não encontrada!");
+      throw new NotFoundException('Categoria não encontrada!');
 
     await this.prisma.category.update({
       where: {
@@ -65,7 +65,7 @@ export class CategoryService {
         id,
       },
     });
-    return "Categoria atualizada com sucesso!";
+    return 'Categoria atualizada com sucesso!';
   }
 
   async remove(id: string, user: string) {
@@ -77,7 +77,7 @@ export class CategoryService {
     });
 
     if (!categoryexists)
-      throw new NotFoundException("Categoria não encontrada!");
+      throw new NotFoundException('Categoria não encontrada!');
 
     await this.prisma.category.delete({
       where: {
@@ -86,6 +86,6 @@ export class CategoryService {
       },
     });
 
-    return "Categoria deletada com sucesso!";
+    return 'Categoria deletada com sucesso!';
   }
 }
