@@ -32,7 +32,7 @@ export class AuthController {
   ) {
     return this.authService.resetPassword(
       token,
-      resetPasswordDto.newPassword,
+      resetPasswordDto.password,
       resetPasswordDto.confirmPassword,
     );
   }

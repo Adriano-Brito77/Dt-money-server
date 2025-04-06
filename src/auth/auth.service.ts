@@ -80,15 +80,15 @@ export class AuthService {
 
   async resetPassword(
     token: string,
-    newPassword: string,
+    password: string,
     confirmPassword: string,
   ) {
-    if (!newPassword)
+    if (!password)
       throw new BadRequestException('Preencha o campo Nova Senha!');
     if (!confirmPassword)
       throw new BadRequestException('Preencha o campo Confirmação de Senha!');
 
-    if (newPassword !== confirmPassword)
+    if (password !== confirmPassword)
       throw new BadRequestException('As senhas não coincidem!');
     try {
       const { email } = this.jwtService.verify(token);
@@ -99,7 +99,7 @@ export class AuthService {
         throw new BadRequestException('Usuário não encontrado');
       }
 
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
       await this.prisma.user.update({
         where: { id: user.id }, // Identificar o usuário pelo ID
         data: { password: hashedPassword }, // Atualizar o campo de senha
